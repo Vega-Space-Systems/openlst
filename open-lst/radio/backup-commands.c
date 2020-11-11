@@ -25,19 +25,7 @@
 #include "watchdog.h"
 
 #ifdef CUSTOM_COMMANDS
-uint8_t custom_commands(const __xdata command_t *cmd, uint8_t len, __xdata command_t *reply) {
-	uint8_t reply_length
-	reply->header.command = common_msg_nack;
-	reply_length = sizeof(reply->header)
-	switch(cmd->header.command) {
-		case custom_msg_test:
-			reply->header.command = custom_msg_test;
-			break;
-		default:
-			break;
-	}
-	return reply_length
-}
+uint8_t custom_commands(const __xdata command_t *cmd, uint8_t len, __xdata command_t *reply);
 #endif
 
 uint8_t commands_handle_command(const __xdata command_t *cmd, uint8_t len, __xdata command_t *reply) {

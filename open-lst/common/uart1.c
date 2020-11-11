@@ -150,6 +150,7 @@ void dprintf1(const char * msg) {
 	print_buf.header.seqnum = 0;
 	print_buf.header.system = MSG_TYPE_RADIO_OUT;
 	print_buf.header.command = common_msg_ascii;
+	memsetx((__xdata void *) print_buf.data, 0x00, sizeof(print_buf.data));
 	len = strcpylenx((__xdata void *) print_buf.data, (__xdata void *) msg);
 	uart1_send_message((__xdata void *) &print_buf, len + sizeof(print_buf.header));
 }

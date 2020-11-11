@@ -326,6 +326,7 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 	__xdata rf_message_footer_t *footer;
 	uint8_t rf_extras;
 	uint8_t rf_msg_len;
+	cout << "TESTY TESTY" << endl;
 	#ifndef BOOTLOADER
 	if (precise_timing) {
 		// Enable the timer interrupt now. The interrupt will send STX
@@ -344,6 +345,7 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 	rf_extras = sizeof(*footer) - sizeof(rf_tx_buffer.header.length);
 	if (len > RF_BUFFER_SIZE - rf_extras) {
 		// TODO logging?
+		cout << "MESSAGE TOO LOOOOOONG" < endl;
 		return;
 	}
 	rf_msg_len = len + rf_extras;
