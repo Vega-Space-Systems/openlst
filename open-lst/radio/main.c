@@ -84,7 +84,6 @@ void main(void) {
 	#if BOARD_HAS_LED == 1
 	board_led_set(0);
 	#endif
-
 	dprintf1(BOOT_STRING(GIT_REV));
 	while (1) {
 		WATCHDOG_CLEAR;

@@ -41,6 +41,7 @@ BOOTLOADER_ACK = '\x01'
 BOOTLOADER_NACK = '\x0f'
 JOKE = '\x0b'
 ASCII = '\x11'
+ASCIITEST = '\x30'
 AES_KEY_SIZE = 16
 
 
@@ -305,6 +306,7 @@ COMMANDS = [
             UInt32Argument("custom0"),
             UInt32Argument("custom1")),
     Command("ascii", ASCII, StringArgument("text")),
+    Command("asciiTest", ASCIITEST),
 ]
 
 

@@ -26,6 +26,7 @@
 #include "uart0.h"
 #include "uart1.h"
 #include "radio.h"
+#include <stdio.h>
 
 static __xdata command_buffer_t buffer;
 static __xdata command_buffer_t reply;
@@ -42,7 +43,7 @@ static __xdata command_buffer_t reply;
 #define MIN_RADIO_MSG_SIZE sizeof(command_header_t)
 #endif
 
-inline void custom_input_handle(__xdata command_t *cmd);
+//inline void custom_input_handle(__xdata command_t *cmd);
 
 #if UART0_ENABLED == 1
 void input_handle_uart0_rx(void) {
@@ -79,7 +80,6 @@ void input_handle_uart0_rx(void) {
 
 #if UART1_ENABLED == 1
 void input_handle_uart1_rx(void) {
-	cout << "UART TEST" << endl;
 	uint8_t len;
 	uint8_t reply_len;
 	len = uart1_get_message(buffer.msg);
@@ -116,6 +116,7 @@ void input_handle_rf_rx(void) {
 	uint8_t reply_len;
 	uint8_t uart_sel;
 	len = radio_get_message(&buffer.cmd, &uart_sel);
+	//dprintf1("input_handler.c --> input_handle_rf_rx(void) reached");
 	if (len == 0) { // no messages
 		return;
 	}
@@ -132,7 +133,7 @@ void input_handle_rf_rx(void) {
 		if (reply_len) {
 			radio_send_packet(&reply.cmd, reply_len, RF_TIMING_NOW, uart_sel);
 		}
-		custom_input_handle(&buffer.cmd);
+		//custom_input_handle(&buffer.cmd);
 		return;
 	} else {
 		// If it's addressed elsewhere, attempt to forward it out
@@ -144,21 +145,13 @@ void input_handle_rf_rx(void) {
 	}
 	return;
 }
-
-//Method borrowed from:
-//	https://github.com/insun2721/openlst/commit/b4c5abcdbe2452df3860407628e3fc64a9742ffc
-inline void custom_input_handle(__xdata command_t *cmd)
-{
-	cout << "TEST" << endl;
-	switch (cmd->header.command)
-	{
-		case common_msg_ascii:
-		{
-			dprintf1(cmd->data);
-			break;
-		}
-
-		default:
-			break;
-	}
-}
+/*
+uint8_t custom_commands(const __xdata command_t *cmd, uint8_t len, __xdata command_t *reply) {
+  switch (cmd->header.command) {
+    	case common_msg_ascii:
+		break;
+   	default:
+		break;
+  }
+	return 0;
+}*/

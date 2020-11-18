@@ -52,6 +52,7 @@ class CommandHandler(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, hwid):
+	print "Test 0001"
         if isinstance(hwid, basestring):
             self.hwid = int(hwid, 16)
         else:
@@ -69,6 +70,7 @@ class CommandHandler(object):
 
     @abc.abstractmethod
     def send_message(self, msg):
+	print "tools/openlst_tools/commands.py -- OUTPUT TEST 1"
         pass
 
     @abc.abstractmethod
@@ -86,6 +88,7 @@ class CommandHandler(object):
         msg = self.trans.bytes_from_string(
             hwid=self.hwid, seqnum=self.seqnum,
             s=cmd)
+	print(cmd)
         self.flush()
         self.send_message(msg)
 
@@ -100,6 +103,7 @@ class CommandHandler(object):
         return None
 
     def send_cmd_once(self, cmd, timeout):
+	print (cmd + " 2")
         self._inc_seqnum()
         log.debug("Sending (%04X): %s", self.hwid, cmd)
         resp = self._send_cmd_once(cmd, timeout)

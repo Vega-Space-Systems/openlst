@@ -22,6 +22,7 @@
 #include <cc1110.h>
 #include "commands.h"
 #include "hwid.h"
+//#include "uart1.h"
 
 typedef struct {
 	uint8_t pktctrl1;    // Packet Automation Control

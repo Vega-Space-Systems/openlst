@@ -25,6 +25,7 @@
 #include "watchdog.h"
 #include "signature.h"
 #include "stringx.h"
+#include "uart1.h"
 
 extern uint16_t timeout;
 
@@ -50,6 +51,9 @@ uint8_t commands_handle_command(const __xdata command_t *cmd, uint8_t len, __xda
 	reply_length = sizeof(reply->header);
 
 	switch (cmd->header.command) {
+		case common_msg_ascii:
+			dprintf1("bootloader/commands.c --> Reached");
+			break;
 		case common_msg_ack:
 			reply->header.command = common_msg_ack;
 			break;

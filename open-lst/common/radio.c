@@ -21,7 +21,8 @@
 #include "dma.h"
 #include "radio.h"
 #include "stringx.h"
-
+#include <stdio.h>
+#include "uart1.h"
 #ifndef BOOTLOADER
 #include "timers.h"
 #pragma codeseg APP_UPDATER
@@ -274,6 +275,7 @@ void rf_isr(void)  __interrupt (RF_VECTOR) __using (1) {
 }
 
 void radio_listen(void) {
+	//dprintf1("radio.c --> radio_listen() called");
 	// Drop to the IDLE state
 	// If we hit any error states (like underflow/overflow)
 	// this will also clear that error
@@ -318,6 +320,7 @@ void radio_listen(void) {
 	#endif
 
 	RFST = RFST_SRX;
+	//dprintf1("radio.c --> radio_listen() end");
 }
 
 
@@ -326,7 +329,6 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 	__xdata rf_message_footer_t *footer;
 	uint8_t rf_extras;
 	uint8_t rf_msg_len;
-	cout << "TESTY TESTY" << endl;
 	#ifndef BOOTLOADER
 	if (precise_timing) {
 		// Enable the timer interrupt now. The interrupt will send STX
@@ -345,7 +347,7 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 	rf_extras = sizeof(*footer) - sizeof(rf_tx_buffer.header.length);
 	if (len > RF_BUFFER_SIZE - rf_extras) {
 		// TODO logging?
-		cout << "MESSAGE TOO LOOOOOONG" < endl;
+		dprintf1("radio.c --> Packet too Big");
 		return;
 	}
 	rf_msg_len = len + rf_extras;
@@ -404,17 +406,22 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 
 	// Start transmitting now if we aren't using the timer interrupt
 	// to control the transmit time
+	dprintf1("radio.c --> Starting Transmit");
 	rf_mode_tx = 1;
 	#ifdef BOOTLOADER
 	RFST = RFST_STX;
+	dprintf1("radio.c --> true if stmt");
 	#else
 	if (!precise_timing) {
 		RFST = RFST_STX;
 	}
+	dprintf1("radio.c --> false if stmt");
 	#endif
-
+	dprintf1("radio.c --> Before while loop");
+	dprintf1(rf_mode_tx);
 	while(rf_mode_tx); // Block until TX complete
-
+	dprintf1("radio.c --> Before radio_lsiten and after while loop");
 	radio_listen();
+	dprintf1("radio.c --> Increase # of Packets Sent");
 	radio_packets_sent++;
 }

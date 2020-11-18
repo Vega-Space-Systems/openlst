@@ -23,6 +23,7 @@
 #include "schedule.h"
 #include "stringx.h"
 #include "watchdog.h"
+#include "uart1.h"
 
 #ifdef CUSTOM_COMMANDS
 uint8_t custom_commands(const __xdata command_t *cmd, uint8_t len, __xdata command_t *reply) {
@@ -58,12 +59,23 @@ uint8_t commands_handle_command(const __xdata command_t *cmd, uint8_t len, __xda
 
 	cmd_data = (__xdata msg_data_t *) cmd->data;
 	reply_data = (__xdata msg_data_t *) reply->data;
-
+	
 	// Fallthrough case - use "nack" as the default response
 	reply->header.command = common_msg_nack;
 	reply_length = sizeof(reply->header);
-
 	switch (cmd->header.command) {
+		case common_msg_ascii:
+			dprintf1("commands.c --> Begin ascii section");
+			reply->header.command = common_msg_ack;
+			dprintf1("cmd->data:");
+			dprintf1(cmd->data);
+			//uart1_send_message(cmd->data, reply_length);
+			radio_send_packet(cmd, sizeof(cmd->header), RF_TIMING_NOW, 1);
+			dprintf1("commands.c --> End of ascii section");
+			break;
+		case common_msg_asciiTest:
+			reply->header.command = common_msg_ack;
+			break;
 		case common_msg_ack:
 			reply->header.command = common_msg_ack;
 			break;
@@ -71,7 +83,6 @@ uint8_t commands_handle_command(const __xdata command_t *cmd, uint8_t len, __xda
 		case common_msg_nack:
 			reply->header.command = common_msg_nack;
 			break;
-
 		case radio_msg_reboot:
 			// Postpone reboot by specified number of seconds
 			if (len < sizeof(cmd->header) + sizeof(cmd_data->reboot_postpone)) {
@@ -138,6 +149,7 @@ uint8_t commands_handle_command(const __xdata command_t *cmd, uint8_t len, __xda
 
 		#if RADIO_RANGING_RESPONDER == 1
 		case radio_msg_ranging:
+			dprintf1("commands.c --> radio_msg_ranging was called");
 			reply->header.command = radio_msg_ranging_ack;
 			// TODO handle encryption
 			reply_data->ranging_ack.ack_type = RANGING_ACK_TYPE;
