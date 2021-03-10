@@ -25,7 +25,6 @@ typedef enum {
   common_msg_ack = 0x10,
   common_msg_nack = 0xff,
   common_msg_ascii = 0x11,
-  common_msg_asciiTest = 0x30,
   custom_msg_test = 0x20
 } common_msg_no;
 

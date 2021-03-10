@@ -275,7 +275,6 @@ void rf_isr(void)  __interrupt (RF_VECTOR) __using (1) {
 }
 
 void radio_listen(void) {
-	//dprintf1("radio.c --> radio_listen() called");
 	// Drop to the IDLE state
 	// If we hit any error states (like underflow/overflow)
 	// this will also clear that error
@@ -320,7 +319,6 @@ void radio_listen(void) {
 	#endif
 
 	RFST = RFST_SRX;
-	//dprintf1("radio.c --> radio_listen() end");
 }
 
 
@@ -406,22 +404,17 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 
 	// Start transmitting now if we aren't using the timer interrupt
 	// to control the transmit time
-	dprintf1("radio.c --> Starting Transmit");
+	//dprintf1("radio.c --> Starting Transmit");
 	rf_mode_tx = 1;
 	#ifdef BOOTLOADER
 	RFST = RFST_STX;
-	dprintf1("radio.c --> true if stmt");
 	#else
 	if (!precise_timing) {
 		RFST = RFST_STX;
 	}
-	dprintf1("radio.c --> false if stmt");
 	#endif
-	dprintf1("radio.c --> Before while loop");
 	dprintf1(rf_mode_tx);
 	while(rf_mode_tx); // Block until TX complete
-	dprintf1("radio.c --> Before radio_lsiten and after while loop");
 	radio_listen();
-	dprintf1("radio.c --> Increase # of Packets Sent");
 	radio_packets_sent++;
 }

@@ -213,6 +213,10 @@ includes:
 5. A shared folder with the host machine so you can use development tools on
    your host while running the toolchain and programmer tools in the VM
 
+NOTE: pip 21+ lost support of python 2.7 in January of 2021. This repository
+updated the setup to install the version of pip before version 21. Thos change
+was made in 'project/open-lst/tools/install\_python\_tools'
+
 #### To set up the VM:
 
 1. Install [VirtualBox and the Guest Extensions](
@@ -313,6 +317,12 @@ vagrant@ubuntu-xenial:~/project$ make clean
 ```
 
 ## Building and Loading the Bootloader
+
+**Update:**
+The bootloading process can be completed faster by calling `#bash boot_build.sh`
+from the *project* folder. Be sure to update the signing-key and HWID before
+calling.
+**Update END**
 
 Note: this section assumes you logged in to the Vagrant VM (via vagrant ssh)
 
@@ -427,6 +437,12 @@ example the SHA is `1874e4b`, but it may be different on your terminal
 depending on your version of the repo.
 
 ## Building and Loading the Application
+
+**Update:**
+The application loading process can be completed faster by calling 
+`#bash app_load.sh` from the *project* folder. Be sure to update the signing-key
+and HWID before calling.
+**Update END**
 
 The application is loaded over the serial connection rather than
 through the CC Debugger. To program the application, the FTDI USB-serial
@@ -1122,6 +1138,48 @@ SmartRF Studio.
  * Settable reboot timer
 
 ### Adding a Custom Command
+
+**Updated Section:**
+
+Custom commands can be created via the commands.c file located in 'open-lst/radio/'.
+To add a command find the following switch-case:
+
+```cpp
+switch (cmd->header.command) {
+    ...
+}
+```
+
+Create a case statement that begins with 'common\_msg\_' followed by the name of the
+command. For example, a command called *HelloWorld* that outputs *"Hello World!"* to
+the radio terminal would be implemented like this (Add `#include "uart1.h` to the
+top of the file to output to the radio\_terminal via UART1 using dprintf() ):
+
+```cpp
+switch (cmd->header.command) {
+    ...
+    case common_msg_HelloWorld:
+        dprintf1("Hellow World!");
+        break;
+    ...
+}
+```
+To be able to call a command through the radio\_terminal and to add it to the
+Translator, you must modify the Translator.py file located in 
+'project/open-lst/tools/openlst-tools'. For example, to add HelloWorld to the
+Translator.py file, the following lines of code would be added:
+
+Add the following definition after the package imports (Any unused value can
+be used):
+`HELLOWORLD = '\x30'`
+
+Link the previous definition to the command name by adding the following command
+of code to the *COMMANDS* array:
+`Command("HellowWorld", HELLOWORLD)`
+
+Your command should be able to be called through the Radio Terminal.
+
+**Old Section:**
 
 Custom command handlers can be added by defining `CUSTOM_COMMANDS` in `board.h`
 and providing a `custom_commands` function in `board.c` (with a forward definition

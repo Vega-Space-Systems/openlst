@@ -26,7 +26,6 @@
 #include "uart0.h"
 #include "uart1.h"
 #include "radio.h"
-#include <stdio.h>
 
 static __xdata command_buffer_t buffer;
 static __xdata command_buffer_t reply;
@@ -116,7 +115,6 @@ void input_handle_rf_rx(void) {
 	uint8_t reply_len;
 	uint8_t uart_sel;
 	len = radio_get_message(&buffer.cmd, &uart_sel);
-	//dprintf1("input_handler.c --> input_handle_rf_rx(void) reached");
 	if (len == 0) { // no messages
 		return;
 	}
@@ -145,13 +143,3 @@ void input_handle_rf_rx(void) {
 	}
 	return;
 }
-/*
-uint8_t custom_commands(const __xdata command_t *cmd, uint8_t len, __xdata command_t *reply) {
-  switch (cmd->header.command) {
-    	case common_msg_ascii:
-		break;
-   	default:
-		break;
-  }
-	return 0;
-}*/
