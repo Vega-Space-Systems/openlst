@@ -42,6 +42,8 @@ static __xdata command_buffer_t reply;
 #define MIN_RADIO_MSG_SIZE sizeof(command_header_t)
 #endif
 
+//inline void custom_input_handle(__xdata command_t *cmd);
+
 #if UART0_ENABLED == 1
 void input_handle_uart0_rx(void) {
 	uint8_t len;
@@ -129,6 +131,7 @@ void input_handle_rf_rx(void) {
 		if (reply_len) {
 			radio_send_packet(&reply.cmd, reply_len, RF_TIMING_NOW, uart_sel);
 		}
+		//custom_input_handle(&buffer.cmd);
 		return;
 	} else {
 		// If it's addressed elsewhere, attempt to forward it out

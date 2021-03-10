@@ -25,6 +25,7 @@
 #include "watchdog.h"
 #include "signature.h"
 #include "stringx.h"
+#include "uart1.h"
 
 extern uint16_t timeout;
 

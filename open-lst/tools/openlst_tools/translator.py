@@ -39,6 +39,7 @@ BOOTLOADER_ERASE = '\x0c'
 BOOTLOADER_WRITE_PAGE = '\x02'
 BOOTLOADER_ACK = '\x01'
 BOOTLOADER_NACK = '\x0f'
+JOKE = '\x0b'
 ASCII = '\x11'
 AES_KEY_SIZE = 16
 
@@ -271,6 +272,7 @@ COMMANDS = [
             StringArgument("callsign")),
     Command("callsign", CALLSIGN,
             StringArgument("callsign")),
+    Command("Joke", JOKE),
     Command("get_telem", GET_TELEM),
     Command("telem", TELEM,
             UInt8Argument("reserved"),

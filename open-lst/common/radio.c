@@ -21,7 +21,8 @@
 #include "dma.h"
 #include "radio.h"
 #include "stringx.h"
-
+#include <stdio.h>
+#include "uart1.h"
 #ifndef BOOTLOADER
 #include "timers.h"
 #pragma codeseg APP_UPDATER
@@ -344,6 +345,7 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 	rf_extras = sizeof(*footer) - sizeof(rf_tx_buffer.header.length);
 	if (len > RF_BUFFER_SIZE - rf_extras) {
 		// TODO logging?
+		dprintf1("radio.c --> Packet too Big");
 		return;
 	}
 	rf_msg_len = len + rf_extras;
@@ -402,6 +404,7 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 
 	// Start transmitting now if we aren't using the timer interrupt
 	// to control the transmit time
+	//dprintf1("radio.c --> Starting Transmit");
 	rf_mode_tx = 1;
 	#ifdef BOOTLOADER
 	RFST = RFST_STX;
@@ -410,9 +413,8 @@ void radio_send_packet(const __xdata command_t* cmd, uint8_t len,
 		RFST = RFST_STX;
 	}
 	#endif
-
+	dprintf1(rf_mode_tx);
 	while(rf_mode_tx); // Block until TX complete
-
 	radio_listen();
 	radio_packets_sent++;
 }
